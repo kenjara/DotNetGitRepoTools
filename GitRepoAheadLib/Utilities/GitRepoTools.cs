@@ -34,7 +34,7 @@
                         continue;
                     }
 
-                    if (CheckIfRepoIsAhead(repo))
+                    if (UpdateRepoStatus(repo))
                     {
                         // Remove path from repo name
                         var repoName = GetRepoName(rootFolder, repo);
@@ -46,7 +46,7 @@
             return unpushedRepos;
         }
 
-        private static bool CheckIfRepoIsAhead(string repoPath)
+        private static bool UpdateRepoStatus(string repoPath)
         {
             var ahead = false;
 
@@ -84,6 +84,51 @@
             process.WaitForExit();
 
             return ahead;
+        }
+
+        private static void UpdateRepoStatus(RepositoryStatus repoStatus)
+        {
+            var ahead = false;
+
+            // Setup git command
+            ProcessStartInfo startInfo =
+                new ProcessStartInfo("cmd", "/c " + $"git remote update&git -C {repoStatus.Path} branch -v")
+                    {
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        UseShellExecute = false,
+                        RedirectStandardOutput = true,
+                        CreateNoWindow = true
+                    };
+
+            Process process = Process.Start(startInfo);
+
+            if (process == null)
+            {
+                return;
+            }
+
+            // Create handler for output event
+            process.OutputDataReceived += (s, e) =>
+                {
+                    if (e.Data != null)
+                    {
+                        // Check for ahead in string to see if ahead of remote.
+                        if (e.Data.Contains("ahead"))
+                        {
+                            // Flag unpushed changes
+                            repoStatus.Ahead = true;
+                        }
+
+                        // Check for ahead in string to see if ahead of remote.
+                        if (e.Data.Contains("behind"))
+                        {
+                            // Flag unpushed changes
+                            repoStatus.Behind = true;
+                        }
+                    }
+                };
+            process.BeginOutputReadLine();
+            process.WaitForExit();
         }
 
         private static string GetRepoName(string rootFolder, string repo)
@@ -146,7 +191,8 @@
 
             foreach (var repositoryStatus in repos)
             {
-                repositoryStatus.Ahead = CheckIfRepoIsAhead(repositoryStatus.Path);
+                // Update status of each repository
+                UpdateRepoStatus(repositoryStatus);
             }
 
             return repos;

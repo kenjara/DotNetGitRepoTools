@@ -44,19 +44,18 @@
                 this.OnPropertyChanged();
             }
         }
-        // Not yet implemented.
-        //public bool Behind
-        //{
-        //    get
-        //    {
-        //        return this.behind;
-        //    }
-        //    set
-        //    {
-        //        this.behind = value;
-        //        this.OnPropertyChanged();
-        //    }
-        //}
+        public bool Behind
+        {
+            get
+            {
+                return this.behind;
+            }
+            set
+            {
+                this.behind = value;
+                this.OnPropertyChanged();
+            }
+        }
 
         public string Path
         {
