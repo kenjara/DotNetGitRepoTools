@@ -5,20 +5,11 @@ I built this project to help developers coming from TF and SVN to remember to pu
 
 Example usage
 
-```
+
 class Program
     {
-        /// <summary>
-        /// The dev directory.
-        /// </summary>
-        private const string DevDirectory = @"C:\Development";
+        private const string DevDirectory = @"C:\DevelopmentFolder";
 
-        /// <summary>
-        /// The main.
-        /// </summary>
-        /// <param name="args">
-        /// The args.
-        /// </param>
         public static void Main(string[] args)
         {
             var unpushedRepos = GitRepoTools.GetAheadReposFromRootDir(DevDirectory);
@@ -31,4 +22,4 @@ class Program
             Console.ReadLine();
         }
     }
-```
+
