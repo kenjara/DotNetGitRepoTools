@@ -6,21 +6,21 @@ I built this project to help developers coming from TF and SVN to remember to pu
 Example usage
 
 
-class Program
-    {
-        
-        private const string DevDirectory = @"C:\DevelopmentFolder";
-
-        public static void Main(string[] args)
+    class Program
         {
-            var unpushedRepos = GitRepoTools.GetAheadReposFromRootDir(DevDirectory);
 
-            foreach (var unpushedRepo in unpushedRepos)
+            private const string DevDirectory = @"C:\DevelopmentFolder";
+
+            public static void Main(string[] args)
             {
-                Console.WriteLine($"Repo {unpushedRepo} has unpushed changes!");
+                var unpushedRepos = GitRepoTools.GetAheadReposFromRootDir(DevDirectory);
+
+                foreach (var unpushedRepo in unpushedRepos)
+                {
+                    Console.WriteLine($"Repo {unpushedRepo} has unpushed changes!");
+                }
+
+                Console.ReadLine();
             }
-            
-            Console.ReadLine();
         }
-    }
 
