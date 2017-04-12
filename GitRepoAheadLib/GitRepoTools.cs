@@ -26,14 +26,23 @@
 
                 foreach (var repo in repos)
                 {
+                    if (!Directory.Exists($"{repo}\\.git"))
+                    {
+                        continue;
+                    }
+
                     // Setup git command
-                    ProcessStartInfo startInfo = new ProcessStartInfo("cmd", "/c " + $"git -C {repo} branch -v")
-                                                     {
-                                                         WindowStyle = ProcessWindowStyle.Hidden,
-                                                         UseShellExecute = false,
-                                                         RedirectStandardOutput = true,
-                                                         CreateNoWindow = true
-                                                     };
+                    ProcessStartInfo startInfo =
+                        new ProcessStartInfo("cmd", "/c " + $"git -C {repo} branch -v")
+                            {
+                                WindowStyle =
+                                    ProcessWindowStyle
+                                        .Hidden,
+                                UseShellExecute = false,
+                                RedirectStandardOutput =
+                                    true,
+                                CreateNoWindow = true
+                            };
 
                     Process process = Process.Start(startInfo);
 
@@ -54,8 +63,7 @@
                                     // Flag unpushed changes
 
                                     // Remove path from repo name
-                                    var repoName = repo.Replace(rootFolder, string.Empty);
-                                    repoName = repoName.Replace(@"\", string.Empty);
+                                    var repoName = GetRepoName(rootFolder, repo);
                                     unpushedRepos.Add(repoName);
                                 }
                             }
@@ -66,6 +74,34 @@
             }
 
             return unpushedRepos;
+        }
+
+        private static string GetRepoName(string rootFolder, string repo)
+        {
+            var repoName = repo.Replace(rootFolder, string.Empty);
+            repoName = repoName.Replace(@"\", string.Empty);
+            return repoName;
+        }
+
+        public static List<string> GetGitReposInDir(string rootFolder)
+        {
+            var detectedRepos = new List<string>();
+
+            if (Directory.Exists(rootFolder))
+            {
+                var repos = Directory.GetDirectories(rootFolder);
+
+                foreach (var repo in repos)
+                {
+                    if (Directory.Exists($"{repo}\\.git"))
+                    {
+                        var repoName = GetRepoName(rootFolder, repo);
+                        detectedRepos.Add(repoName);
+                    }
+                }
+            }
+
+            return detectedRepos;
         }
     }
 }
