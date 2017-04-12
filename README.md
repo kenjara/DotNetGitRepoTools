@@ -5,6 +5,7 @@ I built this project to help developers coming from TF and SVN to remember to pu
 
 Example usage
 
+```
 class Program
     {
         /// <summary>
@@ -30,3 +31,4 @@ class Program
             Console.ReadLine();
         }
     }
+```
