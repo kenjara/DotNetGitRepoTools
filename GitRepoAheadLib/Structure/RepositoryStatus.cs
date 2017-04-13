@@ -13,6 +13,10 @@
 
         private string path = string.Empty;
 
+        private int aheadCount = 0;
+
+        private int behindCount = 0;
+
         public RepositoryStatus(string nameIn, string pathIn)
         {
             this.name = nameIn;
@@ -44,6 +48,21 @@
                 this.OnPropertyChanged();
             }
         }
+
+        [DisplayName("Commits Ahead")]
+        public int AheadCount
+        {
+            get
+            {
+                return this.aheadCount;
+            }
+            set
+            {
+                this.aheadCount = value;
+                this.OnPropertyChanged();
+            }
+        }
+
         public bool Behind
         {
             get
@@ -53,6 +72,20 @@
             set
             {
                 this.behind = value;
+                this.OnPropertyChanged();
+            }
+        }
+
+        [DisplayName("Commits Behind")]
+        public int BehindCount
+        {
+            get
+            {
+                return this.behindCount;
+            }
+            set
+            {
+                this.behindCount = value;
                 this.OnPropertyChanged();
             }
         }

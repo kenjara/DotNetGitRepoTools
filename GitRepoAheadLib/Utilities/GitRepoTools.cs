@@ -88,11 +88,9 @@
 
         private static void UpdateRepoStatus(RepositoryStatus repoStatus)
         {
-            var ahead = false;
-
             // Setup git command
             ProcessStartInfo startInfo =
-                new ProcessStartInfo("cmd", "/c " + $"git remote update&git -C {repoStatus.Path} branch -v")
+                new ProcessStartInfo("cmd", "/c " + $"git -C {repoStatus.Path} remote update&git -C {repoStatus.Path} branch -v")
                     {
                         WindowStyle = ProcessWindowStyle.Hidden,
                         UseShellExecute = false,
@@ -117,6 +115,8 @@
                         {
                             // Flag unpushed changes
                             repoStatus.Ahead = true;
+
+                            repoStatus.AheadCount = GetCount(e.Data, "ahead ");
                         }
 
                         // Check for ahead in string to see if ahead of remote.
@@ -124,11 +124,41 @@
                         {
                             // Flag unpushed changes
                             repoStatus.Behind = true;
+
+                            repoStatus.BehindCount = GetCount(e.Data, "behind ");                          
                         }
                     }
                 };
             process.BeginOutputReadLine();
             process.WaitForExit();
+        }
+
+        private static int GetCount(string responseString, string searchString)
+        {
+            int count = 0;
+
+            var subString = responseString.Substring(responseString.IndexOf(searchString, StringComparison.Ordinal) + searchString.Length);
+
+            var countString = string.Empty;
+
+            foreach (var c in subString)
+            {
+                if (char.IsDigit(c))
+                {
+                    countString += c;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if (int.TryParse(countString, out var parsedValue))
+            {
+                count = parsedValue;
+            }
+
+            return count;
         }
 
         private static string GetRepoName(string rootFolder, string repo)
